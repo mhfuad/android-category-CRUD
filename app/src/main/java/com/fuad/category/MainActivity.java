@@ -7,11 +7,19 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.fuad.category.model.Category;
 
@@ -20,6 +28,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
     private RequestQueue requestQueue;
@@ -86,6 +96,64 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         categoryAdapter = new CategoryAdapter(this, category);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(categoryAdapter);
+    }
+    public void addCategory(View v){
+        TextView close, judul;
+        EditText cat;
+        Button submit;
+
+        dialog.setContentView(R.layout.activity_modcat);
+
+//        close = (TextView) dialog.findViewById(R.id.textClose);
+//        judul = (TextView) dialog.findViewById(R.id.judul);
+//
+//        judul.setText("Tambah Kategori");
+//        close.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
+//
+//        cat = (EditText) dialog.findViewById(R.id.cat);
+//        submit = (Button) dialog.findViewById(R.id.submit);
+//
+//        submit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String data = cat.getText().toString();
+//                submit(data);
+//            }
+//        });
+    }
+
+    private void submit(String data) {
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                dialog.dismiss();
+                refresh.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        category.clear();
+                        getData();
+                    }
+                });
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "Post Save fail", Toast.LENGTH_LONG).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String, String> params = new HashMap<>();
+                params.put("Cat", data);
+                return params;
+            }
+        };
+        Volley.newRequestQueue(this).add(request);
     }
 
     @Override
