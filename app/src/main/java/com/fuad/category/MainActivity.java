@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRefresh(){
-
+        category.clear();
+        getData();
     }
 }
