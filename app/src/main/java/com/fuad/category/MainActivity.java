@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private RecyclerView recyclerView;
     private Dialog dialog;
     private CategoryAdapter categoryAdapter;
+    private ImageView addCategory;
     private String url = "https://64a40253c3b509573b56ea44.mockapi.io/category";
 
     @Override
@@ -48,6 +51,13 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         refresh = (SwipeRefreshLayout) findViewById(R.id.swipedown);
         recyclerView = (RecyclerView) findViewById(R.id.category);
+        addCategory = (ImageView) findViewById(R.id.addCategoryButton);
+        addCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goAddPage();
+            }
+        });
 
         dialog = new Dialog(this);
 
@@ -97,68 +107,16 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(categoryAdapter);
     }
-    public void addCategory(View v){
-        TextView close, judul;
-        EditText cat;
-        Button submit;
-
-        dialog.setContentView(R.layout.activity_modcat);
-
-//        close = (TextView) dialog.findViewById(R.id.textClose);
-//        judul = (TextView) dialog.findViewById(R.id.judul);
-//
-//        judul.setText("Tambah Kategori");
-//        close.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                dialog.dismiss();
-//            }
-//        });
-//
-//        cat = (EditText) dialog.findViewById(R.id.cat);
-//        submit = (Button) dialog.findViewById(R.id.submit);
-//
-//        submit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String data = cat.getText().toString();
-//                submit(data);
-//            }
-//        });
-    }
-
-    private void submit(String data) {
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                dialog.dismiss();
-                refresh.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        category.clear();
-                        getData();
-                    }
-                });
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Post Save fail", Toast.LENGTH_LONG).show();
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams(){
-                Map<String, String> params = new HashMap<>();
-                params.put("Cat", data);
-                return params;
-            }
-        };
-        Volley.newRequestQueue(this).add(request);
-    }
 
     @Override
     public void onRefresh(){
         category.clear();
         getData();
     }
+
+    public void goAddPage(){
+        Intent intent = new Intent(this, AddCategoryActivity2.class);
+        startActivity(intent);
+    }
+
 }
