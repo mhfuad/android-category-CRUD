@@ -2,6 +2,7 @@ package com.fuad.category;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
             public void onClick(View view) {
                 int clickPosition = holder.getAbsoluteAdapterPosition();
                 if (clickPosition != RecyclerView.NO_POSITION){
+                    Toast.makeText(context, category.getDescription(), Toast.LENGTH_SHORT).show();
+
                     goToEditPage(category);
                 }
             }
@@ -79,6 +82,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         Intent intent = new Intent(context, EditActivity.class);
         intent.putExtra("id", category.getId());
         intent.putExtra("category", category.getCategory());
+        intent.putExtra("description", category.getDescription());
         context.startActivity(intent);
     }
 

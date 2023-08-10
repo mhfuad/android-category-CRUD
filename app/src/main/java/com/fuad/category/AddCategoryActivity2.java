@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 public class AddCategoryActivity2 extends AppCompatActivity {
 
-    private TextView cat;
+    private TextView cat, catDes;
     private Button submit;
 
     @Override
@@ -30,19 +31,25 @@ public class AddCategoryActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_add_category2);
 
         cat = findViewById(R.id.cat);
+        catDes = findViewById(R.id.catDes);
         submit = findViewById(R.id.submit);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String title = cat.getText().toString();
-                saveCategory(title);
+                String description = catDes.getText().toString();
+                if(title.length() == 0){
+                    Toast.makeText(AddCategoryActivity2.this, "Category empty", Toast.LENGTH_SHORT).show();
+                }else{
+                    saveCategory(title, description);
+                }
             }
         });
 
     }
 
-    private void saveCategory(String title) {
+    private void saveCategory(String title, String description) {
         StringRequest request = new StringRequest(Request.Method.POST, "https://64a40253c3b509573b56ea44.mockapi.io/category", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -59,6 +66,7 @@ public class AddCategoryActivity2 extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError{
                 Map<String, String> params = new HashMap<>();
                 params.put("category", title);
+                params.put("description", description);
                 return params;
             }
         };
@@ -67,5 +75,6 @@ public class AddCategoryActivity2 extends AppCompatActivity {
     private void goToHome() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 }

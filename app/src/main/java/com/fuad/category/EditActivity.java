@@ -21,27 +21,38 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EditActivity extends AppCompatActivity {
-    private EditText cat;
+    private EditText cat, catDes;
     private Button submit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+
         cat = findViewById(R.id.cat);
+        catDes = findViewById(R.id.catDes);
+
         submit = findViewById(R.id.submit);
         int id = getIntent().getIntExtra("id", -1);
 
         cat.setText(getIntent().getStringExtra("category"));
+        catDes.setText(getIntent().getStringExtra("description"));
+
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                saveCategory(id, cat.getText().toString());
+                String title = cat.getText().toString();
+                String description = catDes.getText().toString();
+                if(title.length() == 0){
+                    Toast.makeText(EditActivity.this, "Category title empty", Toast.LENGTH_SHORT).show();
+                }else{
+                    saveCategory(id, title, description);
+                }
+                //saveCategory(id, cat.getText().toString(),);
             }
         });
     }
 
-    private void saveCategory(int id, String title) {
+    private void saveCategory(int id, String title, String description) {
         //Toast.makeText(EditActivity.this, "Update button clicked"+ title, Toast.LENGTH_LONG).show();
         StringRequest request = new StringRequest(Request.Method.PUT, "https://64a40253c3b509573b56ea44.mockapi.io/category/"+id, new Response.Listener<String>() {
             @Override
@@ -59,6 +70,7 @@ public class EditActivity extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("category", title);
+                params.put("description", description);
                 return params;
             }
         };
@@ -68,5 +80,6 @@ public class EditActivity extends AppCompatActivity {
     private void goToHome() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 }

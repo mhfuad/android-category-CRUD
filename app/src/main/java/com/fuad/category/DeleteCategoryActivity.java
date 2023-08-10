@@ -59,6 +59,7 @@ public class DeleteCategoryActivity extends AppCompatActivity {
     private void goToHome() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
 
